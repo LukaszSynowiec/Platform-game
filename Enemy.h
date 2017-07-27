@@ -34,15 +34,21 @@ public:
 	float calculateDistance(sf::Vector2f playerPosition);
 	bool isGoingLeft = true;
 	bool isGoingRight = false;
+	float minX;
+	float maxX;
 	int row = 0;
-	int ammo = 10;
+	int ammo;
+
 	bool onlyOne = true;
 	bool faceRight = false;
 	bool canShot = true;
 	float timeToShot =0.7f;
 	float timeBetweenShots =0;
-	Bullet bullet[10];
+	float timeToAttack = 0.2f;
+	float timeBetweenAttacks = timeToAttack;
+    	const static int maxBullets = 11;
+	Bullet bullet[maxBullets];
 	Animation animation;
-	Enemy(std::string file, float speed, int health, sf::Vector2f position);
+	Enemy(std::string file, float speed, int health);
 };
 

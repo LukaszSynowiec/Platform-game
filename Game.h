@@ -24,10 +24,10 @@ public:
 	};
 	STATE State;
 	~Game();
-	void start(Animation &animation,Player &playerCharacter,vector < Platform >& tablica);
+	void start(Animation &animation,Player &playerCharacter);
 	void draw(Player &playerCharacter,vector < Platform >& tablica);
 	void update(float, Animation &animation, Player &playerCharacter, vector < Platform >& tablica);
-	void setMap(string);
+	void setMap(int);
 	void updateMap();
 	void setHowMuchPlatforms(int x);
 	Menu menu;
