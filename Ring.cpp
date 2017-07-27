@@ -3,15 +3,11 @@
 #include <iostream>
 
 
-Ring::Ring()
+Ring::Ring(sf::Vector2f point)
 {
-
+	pointPosition= point;
 
 	draw_ring = false;
-}
-void Ring::setPosition(sf::Vector2f pos)
-{
-	ring.setPosition(pos);
 }
 void Ring::load(std::string file)
 {

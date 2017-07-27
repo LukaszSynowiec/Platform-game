@@ -12,7 +12,7 @@ Player::Player(sf::Texture &playerTexture,sf::Vector2u imageCount, float switchT
 	row = 0;
 	faceRight = true;
 	playerChar.setTexture(playerTexture);
-
+playerChar.setPosition(0, 768 - (64 + 45));
 
 	State = Start;
 	health = 100;

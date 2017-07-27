@@ -4,7 +4,7 @@
 class Book
 {
 public:
-	Book(std::string);
+	Book(std::string,sf::Vector2f);
 	~Book();
 	bool can_draw = true;
 	void draw(sf::RenderWindow & window);
@@ -12,7 +12,6 @@ public:
 	sf::Texture texture;
 	sf::Vector2f position;
 	sf::Sprite getBook();
-	void setPosition(sf::Vector2f pos);
 
 };
 

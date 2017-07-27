@@ -3,12 +3,12 @@
 #include <iostream>
 
 
-Book::Book(std::string file)
+Book::Book(std::string file,sf::Vector2f position)
 {
 	texture.loadFromFile("data/" + file);
 	body.setTexture(texture);
 	body.setScale(2, 2);
-
+	body.setPosition(position);
 }
 
 
@@ -25,9 +25,4 @@ void Book::draw(sf::RenderWindow &window)
 sf::Sprite Book::getBook()
 {
 	return body;
-}
-
-void Book::setPosition(sf::Vector2f pos)
-{
-	body.setPosition(pos);
 }

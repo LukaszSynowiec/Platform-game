@@ -11,8 +11,7 @@ public:
 
 	bool draw_ring;
 	void draw(sf::RenderWindow &window);
-	Ring();
-	void setPosition(sf::Vector2f pos);
+	Ring(sf::Vector2f point);
 	void load(std::string);
 	sf::Sprite getRing();
 	~Ring();

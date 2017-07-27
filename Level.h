@@ -2,8 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
-#include "Player.h"
-#include "Platform.h"
 using namespace sf;
 using namespace std;
 class Level
@@ -11,7 +9,7 @@ class Level
 public:
 	Level();
 	~Level();
-	bool loadFromFile(int levelNum);
+	bool loadFromFile(string);
 
 	enum TileType
 	{
@@ -35,12 +33,11 @@ public:
 	unsigned short startY;
 
 
+
 	unsigned short width;           // szerokosæ poziomu w kaflach (max 
 	unsigned short height;          // wysokoœæ poziomu w kaflach
 
 	Tile getTile(short);
-	sf::Vector2f setPositionFromFile(int levelnumber, string filename);
-	std::vector<Platform> loadPlatform(int levelnumber, string filename);
-};
 
+};
 
