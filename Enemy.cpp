@@ -5,24 +5,24 @@
 #include <cstdlib>
 #include "Bullet.h"
 
-Enemy::Enemy(std::string file, float speed, int health, sf::Vector2f position)
+Enemy::Enemy(std::string file, float speed, int health)
 	:animation( { 4,1}, 0.1f)
 
 {
 	this->speed = speed;
 	texture.loadFromFile("data/" + file);
 	body.setTexture(texture);
-	body.setPosition(position);
+
 	this->health = health;
 	erase.setPosition({ -100,-100 });
 	STATE = Patrolling;
 	animation.uvRect.width = 32;
 	animation.uvRect.height = 65;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < maxBullets; i++)
 	{
 		bullet[i].setPosition({ -100, -100 });
 	}
-	ammo = 9;
+	ammo = maxBullets;
 
 }
 Enemy::~Enemy()
@@ -45,7 +45,7 @@ void Enemy::Update(float deltaTime,sf::FloatRect boundingBox,sf::Vector2f player
 		temp = 1;
 		if (isGoingLeft)
 		{
-			if (body.getPosition().x <= 870)
+			if (body.getPosition().x <=minX)
 			{
 		
 				isGoingLeft = false;
@@ -60,7 +60,7 @@ void Enemy::Update(float deltaTime,sf::FloatRect boundingBox,sf::Vector2f player
 		}
 		if (isGoingRight)
 		{
-			if (body.getPosition().x >= 1020)
+			if (body.getPosition().x >= maxX)
 			{
 		
 				isGoingLeft = true;
@@ -78,10 +78,15 @@ void Enemy::Update(float deltaTime,sf::FloatRect boundingBox,sf::Vector2f player
 	position = body.getPosition();
 	bodyBoundingBox = body.getGlobalBounds();
 	//pozycja y -60
-	if (playerPosition.y <= 80 && player.State == static_cast <Player::STATE>(1) && calculateDistance(playerPosition) <= 600&&ammo>0)
+	if (playerPosition.y <= body.getPosition().y+30 && player.State == static_cast <Player::STATE>(1) && calculateDistance(playerPosition) <= 600&&ammo>0)
 	{
 				canShot = true;
 				STATE = Shoots;
+	}
+	else if(ammo<=0&&calculateDistance(playerPosition)<40&&playerPosition.y <= body.getPosition().y + 30&&calculateDistance(playerPosition)>-40)
+	{
+		(calculateDistance(playerPosition) > 0) ? faceRight = false : faceRight = true;
+		STATE = Fights;
 	}
 	else
 	{
@@ -147,6 +152,26 @@ void Enemy::Update(float deltaTime,sf::FloatRect boundingBox,sf::Vector2f player
 		animation.Update(row, deltaTime, faceRight);
 		body.setTextureRect(animation.uvRect);
 	}
+	if (STATE == Fights)
+	{
+		if(getPosition().x<1020&&getPosition().x>870&&calculateDistance(playerPosition)>0)
+		{ body.setPosition(playerPosition.x + 20, 60); 
+		}
+		if (getPosition().x < 1020 && getPosition().x>870 && calculateDistance(playerPosition)< 0)
+		{
+			body.setPosition(playerPosition.x - 20, 60);
+		}
+		if(timeBetweenAttacks<=0)
+		{
+			timeBetweenAttacks = timeToAttack;
+			player.health -= 8;
+		}
+
+		row = 2;
+		animation.Update(row, deltaTime, faceRight);
+		body.setTextureRect(animation.uvRect);
+		timeBetweenAttacks -= deltaTime;
+	}
 
 }
 sf::Vector2f Enemy::getPosition()
@@ -155,11 +180,12 @@ sf::Vector2f Enemy::getPosition()
 }
 void Enemy::setPosition(sf::Vector2f pos)
 {
+
 	body.setPosition(pos);
 }
 void Enemy::draw(sf::RenderWindow &window,Player &playerCharacter)
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < maxBullets; i++)
 	{
 
 			if (bullet[i].draw(window, faceRight, playerCharacter) == true)

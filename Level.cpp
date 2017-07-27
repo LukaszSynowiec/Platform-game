@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "Platform.h"
+#include <string>
 using namespace sf;
 using namespace std;
 Level::Level()
@@ -21,13 +23,18 @@ Level::~Level()
 
 
 // Zwraca "true" je¿eli uda³o siê pomyœlnie wczytaæ plik
-bool Level::loadFromFile(string level_name)
+bool Level::loadFromFile(int levelNum)
 {
+	string filea = "data/level" + to_string(levelNum) + "/map.level";
+
 	fstream file;
-	file.open("data/" + level_name,ios::in);
+	file.open(filea,ios::in);
 
 	if (!file.is_open())
-		return false;
+	{
+	return false;
+	}
+	
 
 	// wczytywanie rozmiarów poziomu
 	file >> width >> height;
@@ -78,4 +85,52 @@ Level::Tile Level::getTile(short code)
 	}
 
 	return tile;
+}
+sf::Vector2f Level::setPositionFromFile(int levelnumber,string filename)
+{
+
+
+	if (levelnumber>10)
+	{
+		float tab[4];
+		string filea = "data/level" + to_string(levelnumber-10) + "/" + filename + ".level";
+
+		fstream file;
+		file.open(filea, ios::in);
+		file >> tab[0] >> tab[1] >> tab[2]>> tab[3];
+		file.close();
+		return sf::Vector2f(tab[2], tab[3]);
+	}
+	else
+	{
+		float x, y;
+		string filea = "data/level" + to_string(levelnumber) + "/" + filename + ".level";
+
+		fstream file;
+		file.open(filea, ios::in);
+		file >> x >> y;
+		file.close();
+		sf::Vector2f temp(x, y);
+		return temp;
+	}
+}
+std::vector<Platform> Level::loadPlatform(int levelnumber, string filename)
+{
+	std::vector<Platform>platform;
+
+	float f1, f2, f3, f4;
+	std::string filea = "data/level" + to_string(levelnumber) + "/" + filename + ".level";
+	fstream file;
+	file.open(filea, ios::in);		
+
+while (!(file.eof()))
+{
+		file >> f1 >> f2 >> f3>>f4;
+	
+		platform.emplace_back(Platform(sf::Vector2f(f1,f2), sf::Vector2f(f3,f4)));
+	}
+	
+	file.close();
+
+	return platform;
 }

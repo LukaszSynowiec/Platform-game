@@ -10,10 +10,10 @@
 using namespace sf;
 using namespace std;
 Game::Game():
-	ring({ 123,45 }), 
-	book1("book.png",{1180,70}),
-	book2("book.png", { 30,150 }),
-	enemy(("enemy.png"),100,100,{1000,60}),
+	ring(), 
+	book1("book.png"),
+	book2("book.png"),
+	enemy("enemy.png",100,100),
 	menu(1280,768)
 {
 	State = MENU;
@@ -47,15 +47,25 @@ Game::Game():
 		sprite[y].resize(WIDTH, standard);
 	}
 	ring.load("ring.png");
-	setMap("map.level");
+	
 }
 Game::~Game()
 {
 }
-void Game::start(Animation &animation, Player &playerCharacter, vector < Platform >& tablica)
+void Game::start(Animation &animation, Player &playerCharacter)
 {
+	std::vector < Platform >platform;
+		platform=level.loadPlatform(1,"platforms");
 
+	setMap(1);
+	sf::Vector2f eneMinMaxVector = level.setPositionFromFile(11, "enemy");
+	playerCharacter.playerChar.setPosition(level.setPositionFromFile(1, "player"));
 
+	enemy.minX = eneMinMaxVector.x;
+	enemy.maxX = eneMinMaxVector.y;
+	book1.setPosition(level.setPositionFromFile(1, "book1"));
+	book2.setPosition(level.setPositionFromFile(1, "book2"));
+	ring.setPosition(level.setPositionFromFile(1, "ring"));
 	ring.draw_ring = false;
 	Time lastUpdate = Time::Zero;
 	Clock time;
@@ -131,16 +141,14 @@ void Game::start(Animation &animation, Player &playerCharacter, vector < Platfor
 			
 			float delta = time.getElapsedTime().asSeconds() - lastUpdate.asSeconds();//czas pomiêdzy klatkami
 			enemy.Update(delta, playerCharacter.getSprite().getGlobalBounds(), playerCharacter.getPosition(), playerCharacter, window);
-			update(delta, animation, playerCharacter, tablica);
+			update(delta, animation, playerCharacter, platform);
 			lastUpdate = time.getElapsedTime();
 			if (x == 1)
 			{
-				sf::Vector2f pos(1000, 60);
-				enemy.setPosition(pos);
-
+				enemy.setPosition(level.setPositionFromFile(1, "enemy"));
 				x = 0;
 			}
-			draw(playerCharacter, tablica);
+			draw(playerCharacter, platform);
 		}
 		if (State == END)
 		{
@@ -291,9 +299,9 @@ void Game::draw(Player &playerCharacter, vector < Platform >& tablica)
 	window.draw(healthText);
 	window.display();
 }
-void Game::setMap(string name)
+void Game::setMap(int i)
 {
-	if (!level.loadFromFile(name)) {
+	if (!level.loadFromFile(i)) {
 		cout << "[ERROR] 404 File not found";
 		return;
 	}
